@@ -1,4 +1,4 @@
-package com.challenge.privalia.privaliachallenge;
+package com.challenge.privalia;
 
 import org.junit.Test;
 

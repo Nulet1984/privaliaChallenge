@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/moviePictureImageView"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignParentStart="true"
+        android:layout_centerVertical="true"
+        android:scaleType="centerCrop"
+        android:padding="@dimen/element_padding"/>
+
+    <TextView
+        android:id="@+id/titleTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@+id/moviePictureImageView"
+        android:layout_alignParentTop="true"
+        style="@style/MBoldTextViewStyle" />
+
+    <TextView
+        android:id="@+id/yearTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/STextViewStyle"
+        android:layout_below="@+id/titleTextView"
+        android:layout_toEndOf="@+id/moviePictureImageView"/>
+
+    <TextView
+        android:id="@+id/overviewTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/yearTextView"
+        android:layout_toEndOf="@+id/moviePictureImageView"
+        style="@style/XSTextViewStyle" />
+
+
+</RelativeLayout>

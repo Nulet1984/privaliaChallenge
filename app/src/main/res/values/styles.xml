@@ -8,4 +8,25 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="TextViewStyle">
+        <item name="android:layout_centerHorizontal">true</item>
+        <item name="android:padding">@dimen/element_padding</item>
+    </style>
+
+    <style name="MBoldTextViewStyle" parent="TextViewStyle">
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">@dimen/text_size_M</item>
+    </style>
+
+    <style name="STextViewStyle" parent="TextViewStyle">
+        <item name="android:textSize">@dimen/text_size_S</item>
+    </style>
+
+
+    <style name="XSTextViewStyle" parent="TextViewStyle">
+        <item name="android:textSize">@dimen/text_size_XS</item>
+    </style>
+
+
+
 </resources>
