@@ -27,8 +27,9 @@ public class MoviePresenter {
 
     private MovieRowAdapter movieRowAdapter;
     private int pageNumber;
-    private boolean callToServiceDone;
     private MovieView movieView;
+    private boolean callToServiceDone;
+    private String filterText;
 
     public void initPresenter(MovieView movieView) {
         this.movieView = movieView;
@@ -40,7 +41,10 @@ public class MoviePresenter {
     }
 
     public void loadDataInList() {
-        movieService.getPopularMovies(++pageNumber);
+        if (!callToServiceDone) {
+            callToServiceDone = true;
+            movieService.getPopularMovies(++pageNumber);
+        }
     }
 
     @Subscribe
@@ -49,7 +53,17 @@ public class MoviePresenter {
             movieRowAdapter = new MovieRowAdapter(context, movieService.getMovieList());
             movieView.setAdapterToList(movieRowAdapter);
         } else {
-            movieRowAdapter.notifyDataSetChanged();
+           movieRowAdapter.getFilter().filter(filterText);
         }
+        callToServiceDone = false;
     }
+
+    public MovieRowAdapter getMovieRowAdapter() {
+        return movieRowAdapter;
+    }
+
+    public void setFilterText(String filterText) {
+        this.filterText = filterText;
+    }
+
 }
