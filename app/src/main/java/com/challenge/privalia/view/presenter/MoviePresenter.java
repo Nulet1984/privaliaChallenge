@@ -4,6 +4,8 @@ import android.content.Context;
 
 import com.challenge.privalia.adapter.MovieRowAdapter;
 import com.challenge.privalia.event.MoviesReadyEvent;
+import com.challenge.privalia.event.NoMoreResultsEvent;
+import com.challenge.privalia.event.RequestMoviesKOEvent;
 import com.challenge.privalia.service.MovieService;
 import com.challenge.privalia.view.MovieView;
 
@@ -37,25 +39,31 @@ public class MoviePresenter {
             EventBus.getDefault().register(this);
         }
         pageNumber = 0;
+        callToServiceDone = true;
         loadDataInList();
     }
 
     public void loadDataInList() {
-        if (!callToServiceDone) {
-            callToServiceDone = true;
+        if (callToServiceDone) {
+            callToServiceDone = false;
+            movieView.setLoading(true);
             movieService.getPopularMovies(++pageNumber);
         }
     }
 
     @Subscribe
     public void onMoviesReadyEvent(MoviesReadyEvent event) {
+
         if (movieRowAdapter == null) {
             movieRowAdapter = new MovieRowAdapter(context, movieService.getMovieList());
             movieView.setAdapterToList(movieRowAdapter);
+            movieView.setLoading(false);
         } else {
-           movieRowAdapter.getFilter().filter(filterText);
+            movieRowAdapter.getFilter().filter(filterText);
         }
-        callToServiceDone = false;
+        callToServiceDone = true;
+
+
     }
 
     public MovieRowAdapter getMovieRowAdapter() {
@@ -64,6 +72,19 @@ public class MoviePresenter {
 
     public void setFilterText(String filterText) {
         this.filterText = filterText;
+    }
+
+    @Subscribe
+    public void onRequestMoviesKOEvent(RequestMoviesKOEvent event) {
+        callToServiceDone = true;
+        pageNumber--;
+        movieView.setLoading(false);
+    }
+
+    @Subscribe
+    public void onNoMoreResultsEvent(NoMoreResultsEvent event) {
+        callToServiceDone = false;
+        movieView.setLoading(false);
     }
 
 }

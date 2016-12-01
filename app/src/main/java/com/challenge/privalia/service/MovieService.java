@@ -4,6 +4,8 @@ package com.challenge.privalia.service;
 import com.challenge.privalia.event.MoviesReadyEvent;
 import com.challenge.privalia.communication.RestClient;
 import com.challenge.privalia.configuration.MovieConfig;
+import com.challenge.privalia.event.NoMoreResultsEvent;
+import com.challenge.privalia.event.RequestMoviesKOEvent;
 import com.challenge.privalia.model.Movie;
 import com.challenge.privalia.model.MovieList;
 
@@ -35,15 +37,25 @@ public class MovieService {
             public void onResponse(Call<MovieList> call, Response<MovieList> response) {
                 if (movieList == null) {
                     movieList = response.body().getResults();
+                    EventBus.getDefault().post(new MoviesReadyEvent());
                 } else {
-                    movieList.addAll(response.body().getResults());
+                    if (response.body() != null && response.body().getResults() != null) {
+                        if (response.body().getResults().size() > 0) {
+                            movieList.addAll(response.body().getResults());
+                            EventBus.getDefault().post(new MoviesReadyEvent());
+                        } else {
+                            EventBus.getDefault().post(new NoMoreResultsEvent());
+                        }
+                    } else {
+                        EventBus.getDefault().post(new RequestMoviesKOEvent());
+                    }
                 }
-                EventBus.getDefault().post(new MoviesReadyEvent());
+
             }
 
             @Override
             public void onFailure(Call<MovieList> call, Throwable t) {
-
+                EventBus.getDefault().post(new RequestMoviesKOEvent());
             }
         });
     }

@@ -9,4 +9,6 @@ import com.challenge.privalia.adapter.MovieRowAdapter;
 public interface MovieView {
 
     void setAdapterToList(MovieRowAdapter movieRowAdapter);
+
+    void setLoading(boolean loading);
 }

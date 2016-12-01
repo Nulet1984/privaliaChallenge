@@ -28,6 +28,7 @@ public class MovieRowAdapter extends BaseAdapter implements Filterable{
     private List<Movie> movieList;
     private List<Movie> movieFilteredList;
     private Filter movieTitleFilter;
+    int numOfElements;
 
     public MovieRowAdapter(Context context, List<Movie> movieList) {
         this.context = context;
@@ -39,7 +40,9 @@ public class MovieRowAdapter extends BaseAdapter implements Filterable{
 
     @Override
     public int getCount() {
-        return movieFilteredList.size();
+
+            return movieFilteredList.size();
+
     }
 
     @Override
@@ -84,14 +87,13 @@ public class MovieRowAdapter extends BaseAdapter implements Filterable{
         protected FilterResults performFiltering(CharSequence constraint) {
             FilterResults filterResults = new FilterResults();
             if (constraint != null && constraint.length() > 0) {
-                List<Movie> movieTempList = new ArrayList<Movie>();
+                List<Movie> movieTempList = new ArrayList<>();
 
                 for (Movie movie : movieList) {
                     if (movie.getTitle().toLowerCase().contains(constraint.toString().toLowerCase())) {
                         movieTempList.add(movie);
                     }
                 }
-
                 filterResults.count = movieTempList.size();
                 filterResults.values = movieTempList;
 
@@ -101,6 +103,7 @@ public class MovieRowAdapter extends BaseAdapter implements Filterable{
                 filterResults.values = movieList;
             }
 
+            numOfElements = filterResults.count;
             return filterResults;
         }
 

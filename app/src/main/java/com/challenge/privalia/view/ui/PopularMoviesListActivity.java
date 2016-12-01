@@ -8,8 +8,10 @@ import android.support.v7.widget.SearchView;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.AbsListView;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 
 import com.challenge.privalia.R;
 import com.challenge.privalia.adapter.MovieRowAdapter;
@@ -25,6 +27,9 @@ public class PopularMoviesListActivity extends AppCompatActivity implements Movi
 
     @ViewById
     ListView movieListView;
+
+    @ViewById
+    RelativeLayout loadingLayout;
 
     @Bean
     MoviePresenter moviePresenter;
@@ -46,6 +51,8 @@ public class PopularMoviesListActivity extends AppCompatActivity implements Movi
             public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
                 if (totalItemCount > 0 && totalItemCount - firstVisibleItem < 5) {
                     moviePresenter.loadDataInList();
+                } else {
+                    setLoading(false);
                 }
             }
         });
@@ -71,6 +78,17 @@ public class PopularMoviesListActivity extends AppCompatActivity implements Movi
     public void setAdapterToList(MovieRowAdapter movieRowAdapter) {
        movieListView.setAdapter(movieRowAdapter);
    }
+
+    @Override
+    public void setLoading(boolean loading) {
+        if (loading) {
+            loadingLayout.setVisibility(View.VISIBLE);
+            movieListView.setEnabled(false);
+        } else {
+            loadingLayout.setVisibility(View.GONE);
+            movieListView.setEnabled(true);
+        }
+    }
 
 
     @Override
