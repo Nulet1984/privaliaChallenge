@@ -35,10 +35,10 @@ public class MovieService {
             public void onResponse(Call<MovieList> call, Response<MovieList> response) {
                 if (movieList == null) {
                     movieList = response.body().getResults();
-                    EventBus.getDefault().post(new MoviesReadyEvent());
                 } else {
                     movieList.addAll(response.body().getResults());
                 }
+                EventBus.getDefault().post(new MoviesReadyEvent());
             }
 
             @Override
