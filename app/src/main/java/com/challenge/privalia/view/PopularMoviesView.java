@@ -6,7 +6,7 @@ import com.challenge.privalia.adapter.MovieRowAdapter;
  * Created by raulpascual on 1/12/16.
  */
 
-public interface MovieView {
+public interface PopularMoviesView {
 
     void setAdapterToList(MovieRowAdapter movieRowAdapter);
 

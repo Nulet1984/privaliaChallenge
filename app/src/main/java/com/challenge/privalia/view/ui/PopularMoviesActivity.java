@@ -8,22 +8,25 @@ import android.support.v7.widget.SearchView;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsListView;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 
 import com.challenge.privalia.R;
 import com.challenge.privalia.adapter.MovieRowAdapter;
-import com.challenge.privalia.view.MovieView;
-import com.challenge.privalia.view.presenter.MoviePresenter;
+import com.challenge.privalia.view.PopularMoviesView;
+import com.challenge.privalia.view.presenter.PopularMoviesPresenter;
 
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ViewById;
 
-@EActivity(R.layout.activity_popular_movies_list)
-public class PopularMoviesListActivity extends AppCompatActivity implements MovieView, SearchView.OnQueryTextListener{
+@EActivity(R.layout.activity_popular_movies)
+public class PopularMoviesActivity extends AppCompatActivity implements PopularMoviesView, SearchView.OnQueryTextListener{
 
     @ViewById
     ListView movieListView;
@@ -32,27 +35,30 @@ public class PopularMoviesListActivity extends AppCompatActivity implements Movi
     RelativeLayout loadingLayout;
 
     @Bean
-    MoviePresenter moviePresenter;
+    PopularMoviesPresenter popularMoviesPresenter;
 
     private MenuItem searchMenuItem;
     private SearchView searchView;
+    private boolean stopSearching;
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-        moviePresenter.initPresenter(this);
+        popularMoviesPresenter.initPresenter(this);
         movieListView.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(AbsListView view, int scrollState) {
-
+                hideKeyboard();
             }
 
             @Override
             public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-                if (totalItemCount > 0 && totalItemCount - firstVisibleItem < 5) {
-                    moviePresenter.loadDataInList();
-                } else {
-                    setLoading(false);
+                if (!stopSearching) {
+                    if (totalItemCount - firstVisibleItem < 5) {
+                        popularMoviesPresenter.loadDataInList();
+                    } else {
+                        setLoading(!popularMoviesPresenter.isCallToServiceDone());
+                    }
                 }
             }
         });
@@ -70,6 +76,14 @@ public class PopularMoviesListActivity extends AppCompatActivity implements Movi
                 getSearchableInfo(getComponentName()));
         searchView.setSubmitButtonEnabled(true);
         searchView.setOnQueryTextListener(this);
+        EditText editText = (EditText) searchView.findViewById(R.id.search_src_text);
+        editText.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                stopSearching = false;
+                return false;
+            }
+        });
         return true;
     }
 
@@ -93,13 +107,25 @@ public class PopularMoviesListActivity extends AppCompatActivity implements Movi
 
     @Override
     public boolean onQueryTextSubmit(String query) {
-        return false;
+        setLoading(false);
+        hideKeyboard();
+        stopSearching = true;
+        return true;
     }
 
     @Override
     public boolean onQueryTextChange(String newText) {
-        moviePresenter.setFilterText(newText);
-        moviePresenter.getMovieRowAdapter().getFilter().filter(newText);
+        stopSearching = false;
+        popularMoviesPresenter.setFilterText(newText);
+        popularMoviesPresenter.getMovieRowAdapter().getFilter().filter(newText);
         return true;
+    }
+
+    public void hideKeyboard() {
+        View view = this.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
     }
 }

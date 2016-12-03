@@ -65,9 +65,9 @@ public class MovieRowAdapter extends BaseAdapter implements Filterable{
         TextView titleTextView = (TextView) view.findViewById(R.id.titleTextView);
         TextView yearTextView = (TextView) view.findViewById(R.id.yearTextView);
         TextView overviewTextView = (TextView) view.findViewById(R.id.overviewTextView);
-        titleTextView.setText(movieFilteredList.get(position).getTitle());
-        yearTextView.setText(movieFilteredList.get(position).getRelease_date().substring(0, 4));
-        overviewTextView.setText(movieFilteredList.get(position).getOverview());
+        titleTextView.setText(movieFilteredList.get(position).getTitle() != null && !movieFilteredList.get(position).getTitle().isEmpty() ? movieFilteredList.get(position).getTitle() : "");
+        yearTextView.setText(movieFilteredList.get(position).getRelease_date() != null && !movieFilteredList.get(position).getRelease_date().isEmpty() ? movieFilteredList.get(position).getRelease_date().substring(0, 4) : "");
+        overviewTextView.setText(movieFilteredList.get(position).getOverview() != null && !movieFilteredList.get(position).getOverview().isEmpty() ? movieFilteredList.get(position).getOverview() : "");
         Picasso.with(context).load(MovieConfig.IMAGE_PRE_URL + movieFilteredList.get(position).getPoster_path()).into(moviePictureImageView);
         return view;
     }

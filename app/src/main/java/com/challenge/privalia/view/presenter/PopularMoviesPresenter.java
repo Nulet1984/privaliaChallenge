@@ -7,7 +7,7 @@ import com.challenge.privalia.event.MoviesReadyEvent;
 import com.challenge.privalia.event.NoMoreResultsEvent;
 import com.challenge.privalia.event.RequestMoviesKOEvent;
 import com.challenge.privalia.service.MovieService;
-import com.challenge.privalia.view.MovieView;
+import com.challenge.privalia.view.PopularMoviesView;
 
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EBean;
@@ -19,7 +19,7 @@ import org.greenrobot.eventbus.Subscribe;
  * Created by raulpascual on 1/12/16.
  */
 @EBean
-public class MoviePresenter {
+public class PopularMoviesPresenter {
 
     @Bean
     MovieService movieService;
@@ -29,12 +29,13 @@ public class MoviePresenter {
 
     private MovieRowAdapter movieRowAdapter;
     private int pageNumber;
-    private MovieView movieView;
+    private PopularMoviesView popularMoviesView;
     private boolean callToServiceDone;
     private String filterText;
+    private boolean noMoreResults;
 
-    public void initPresenter(MovieView movieView) {
-        this.movieView = movieView;
+    public void initPresenter(PopularMoviesView popularMoviesView) {
+        this.popularMoviesView = popularMoviesView;
         if (!EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().register(this);
         }
@@ -44,9 +45,9 @@ public class MoviePresenter {
     }
 
     public void loadDataInList() {
-        if (callToServiceDone) {
+        if (callToServiceDone && !noMoreResults) {
             callToServiceDone = false;
-            movieView.setLoading(true);
+            popularMoviesView.setLoading(true);
             movieService.getPopularMovies(++pageNumber);
         }
     }
@@ -56,13 +57,13 @@ public class MoviePresenter {
 
         if (movieRowAdapter == null) {
             movieRowAdapter = new MovieRowAdapter(context, movieService.getMovieList());
-            movieView.setAdapterToList(movieRowAdapter);
-            movieView.setLoading(false);
+            popularMoviesView.setAdapterToList(movieRowAdapter);
+            popularMoviesView.setLoading(false);
         } else {
             movieRowAdapter.getFilter().filter(filterText);
         }
         callToServiceDone = true;
-
+        noMoreResults = false;
 
     }
 
@@ -78,13 +79,21 @@ public class MoviePresenter {
     public void onRequestMoviesKOEvent(RequestMoviesKOEvent event) {
         callToServiceDone = true;
         pageNumber--;
-        movieView.setLoading(false);
+        popularMoviesView.setLoading(false);
     }
 
     @Subscribe
     public void onNoMoreResultsEvent(NoMoreResultsEvent event) {
-        callToServiceDone = false;
-        movieView.setLoading(false);
+        callToServiceDone = true;
+        popularMoviesView.setLoading(false);
+        noMoreResults = true;
     }
 
+    public boolean isCallToServiceDone() {
+        return callToServiceDone;
+    }
+
+    public void setCallToServiceDone(boolean callToServiceDone) {
+        this.callToServiceDone = callToServiceDone;
+    }
 }
