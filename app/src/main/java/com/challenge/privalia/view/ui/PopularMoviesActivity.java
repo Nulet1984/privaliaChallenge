@@ -25,6 +25,10 @@ import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ViewById;
 
+/**
+ * Main activity to show results in a list
+ */
+
 @EActivity(R.layout.activity_popular_movies)
 public class PopularMoviesActivity extends AppCompatActivity implements PopularMoviesView, SearchView.OnQueryTextListener{
 
@@ -93,6 +97,10 @@ public class PopularMoviesActivity extends AppCompatActivity implements PopularM
        movieListView.setAdapter(movieRowAdapter);
    }
 
+    /**
+     * method to set loading on or off
+     * @param loading
+     */
     @Override
     public void setLoading(boolean loading) {
         if (loading) {
@@ -104,7 +112,11 @@ public class PopularMoviesActivity extends AppCompatActivity implements PopularM
         }
     }
 
-
+    /**
+     * method to indicate app to stop searching results and hide loading
+     * @param query
+     * @return
+     */
     @Override
     public boolean onQueryTextSubmit(String query) {
         setLoading(false);
@@ -113,6 +125,11 @@ public class PopularMoviesActivity extends AppCompatActivity implements PopularM
         return true;
     }
 
+    /**
+     * method to filter results at the list
+     * @param newText
+     * @return
+     */
     @Override
     public boolean onQueryTextChange(String newText) {
         stopSearching = false;
@@ -121,6 +138,9 @@ public class PopularMoviesActivity extends AppCompatActivity implements PopularM
         return true;
     }
 
+    /**
+     * method to hide keyboard when it is not necessary
+     */
     public void hideKeyboard() {
         View view = this.getCurrentFocus();
         if (view != null) {

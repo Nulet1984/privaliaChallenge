@@ -23,7 +23,7 @@ import retrofit2.Response;
  * Created by raulpascual on 30/11/16.
  */
 @EBean
-public class MovieService {
+public class PopularMoviesService {
 
     @Bean
     RestClient restClient;

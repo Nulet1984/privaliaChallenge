@@ -20,6 +20,7 @@ import java.util.List;
 
 /**
  * Created by raulpascual on 30/11/16.
+ * Adapter to show rows on the list
  */
 public class MovieRowAdapter extends BaseAdapter implements Filterable{
 
@@ -27,7 +28,7 @@ public class MovieRowAdapter extends BaseAdapter implements Filterable{
     private static LayoutInflater inflater = null;
     private List<Movie> movieList;
     private List<Movie> movieFilteredList;
-    private Filter movieTitleFilter;
+    public Filter movieTitleFilter;
     int numOfElements;
 
     public MovieRowAdapter(Context context, List<Movie> movieList) {
@@ -81,7 +82,10 @@ public class MovieRowAdapter extends BaseAdapter implements Filterable{
         return movieTitleFilter;
     }
 
-    private class MovieTitleFilter extends Filter {
+    /**
+     * Class for filtering results on the list
+     */
+    public class MovieTitleFilter extends Filter {
 
         @Override
         protected FilterResults performFiltering(CharSequence constraint) {
